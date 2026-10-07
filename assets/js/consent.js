@@ -1,0 +1,97 @@
+/* Google Ads / Analytics etiketleri + çerez onayı (Consent Mode v2)
+   Kimlikler boş kaldıkça hiçbir Google etiketi yüklenmez ve onay bandı gösterilmez. */
+(function () {
+  'use strict';
+
+  var TAGS = {
+    adsId: '',          // Google Ads etiket kimliği, örn. 'AW-123456789'
+    callConversion: '', // Telefon tıklaması dönüşümü, örn. 'AW-123456789/AbCdEfGh'
+    waConversion: '',   // WhatsApp tıklaması / form dönüşümü, örn. 'AW-123456789/IjKlMnOp'
+    gaId: ''            // Google Analytics 4 kimliği, örn. 'G-XXXXXXXXXX'
+  };
+
+  var KEY = 'cerez_onayi';
+  var enabled = !!(TAGS.adsId || TAGS.gaId);
+
+  function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+
+  function consentState(granted) {
+    var v = granted ? 'granted' : 'denied';
+    return { ad_storage: v, ad_user_data: v, ad_personalization: v, analytics_storage: v };
+  }
+
+  if (enabled) {
+    var d = consentState(false);
+    d.wait_for_update = 500;
+    gtag('consent', 'default', d);
+    gtag('set', 'ads_data_redaction', true);
+    gtag('set', 'url_passthrough', true);
+    if (read() === 'granted') gtag('consent', 'update', consentState(true));
+
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + (TAGS.adsId || TAGS.gaId);
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    if (TAGS.adsId) gtag('config', TAGS.adsId);
+    if (TAGS.gaId) gtag('config', TAGS.gaId);
+  }
+
+  // Dönüşümler: telefon, WhatsApp ve iletişim formu
+  function convert(sendTo, label) {
+    if (!enabled) return;
+    if (sendTo) gtag('event', 'conversion', { send_to: sendTo });
+    if (TAGS.gaId) gtag('event', 'generate_lead', { method: label });
+  }
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest) return;
+    if (e.target.closest('[data-send-location]')) { convert(TAGS.waConversion, 'whatsapp-konum'); return; }
+    var a = e.target.closest('a[href]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (href.indexOf('tel:') === 0) convert(TAGS.callConversion, 'telefon');
+    else if (href.indexOf('wa.me/') !== -1) convert(TAGS.waConversion, 'whatsapp');
+  });
+  document.addEventListener('submit', function (e) {
+    if (e.target && e.target.id === 'contactForm') convert(TAGS.waConversion, 'form');
+  });
+
+  // Onay bandı
+  function banner() {
+    if (document.getElementById('cookieBar')) return;
+    var bar = document.createElement('div');
+    bar.id = 'cookieBar';
+    bar.className = 'cookie-bar';
+    bar.setAttribute('role', 'dialog');
+    bar.setAttribute('aria-label', 'Çerez tercihleri');
+    bar.innerHTML =
+      '<p>Sitemizde reklamlarımızın etkinliğini ölçmek için Google çerezleri kullanmak istiyoruz. ' +
+      'Onay vermezseniz yalnızca zorunlu işlevler çalışır. Ayrıntılar: ' +
+      '<a href="gizlilik-politikasi.html">Gizlilik ve Çerez Politikası</a>.</p>' +
+      '<div class="cookie-bar__actions">' +
+      '<button type="button" class="btn btn--ghost-dark" data-c="denied">Reddet</button>' +
+      '<button type="button" class="btn btn--red" data-c="granted">Kabul Et</button></div>';
+    bar.addEventListener('click', function (e) {
+      var c = e.target.getAttribute && e.target.getAttribute('data-c');
+      if (!c) return;
+      save(c);
+      gtag('consent', 'update', consentState(c === 'granted'));
+      bar.remove();
+    });
+    document.body.appendChild(bar);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!enabled) return;
+    document.querySelectorAll('[data-cookie-settings]').forEach(function (el) {
+      el.hidden = false;
+      el.addEventListener('click', function (e) { e.preventDefault(); banner(); });
+    });
+    if (!read()) banner();
+  });
+})();

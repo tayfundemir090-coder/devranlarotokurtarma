@@ -1,0 +1,31 @@
+# Devranlar Oto Kurtarma
+
+> Balıkesir merkezli oto çekici ve araç kurtarma firması. Arızalı ve kazalı araç kurtarma, şehir içi ve şehirlerarası araç taşıma, servis/galeri transferi ve motosiklet taşıma hizmeti verir. Çekici hattı 7 gün 24 saat açıktır.
+
+## Temel bilgiler
+
+- İşletme adı: Devranlar Oto Kurtarma
+- Adres: Balıkesir, Türkiye
+- Telefon / WhatsApp: +90 532 707 44 09
+- Çalışma saatleri: 7 gün 24 saat
+- Hizmet bölgesi: Balıkesir'in tüm ilçeleri (Altıeylül, Karesi, Bandırma, Edremit, Ayvalık, Burhaniye, Gönen, Susurluk, Bigadiç, Sındırgı, Dursunbey, İvrindi, Manyas, Savaştepe, Kepsut, Balya, Erdek, Gömeç, Havran, Marmara) ve şehirlerarası taşıma
+- Hizmetler: Arızalı araç çekme, kazalı araç kurtarma, şehirlerarası araç taşıma, servis ve galeri araç transferi, motosiklet taşıma, SUV ve hafif ticari araç taşıma
+- Araçlar: Kayar kasalı çekiciler (Iveco Daily, Renault Master)
+- Ücret: Aracın nereden nereye gideceğine göre, yola çıkmadan önce telefonda bildirilir
+- Web: https://devranlarotokurtarma.com/
+
+## Sayfalar
+
+- [Anasayfa](https://devranlarotokurtarma.com/): Hizmetler, süreç, filo, neden biz, sık sorulan sorular ve iletişim tek sayfada.
+- [Hizmetler](https://devranlarotokurtarma.com/#hizmetler): Arıza, kaza, şehirlerarası, transfer, motosiklet ve hafif ticari taşıma.
+- [Nasıl çalışır](https://devranlarotokurtarma.com/#surec): Arama/konum, ücret bilgisi, çekicinin yola çıkması, teslimat.
+- [Filomuz](https://devranlarotokurtarma.com/#filo): Kayar kasalı çekici fotoğrafları.
+- [Neden biz ve hizmet bölgesi](https://devranlarotokurtarma.com/#neden): Balıkesir ilçeleri.
+- [Sık sorulan sorular](https://devranlarotokurtarma.com/#sss): Varış süresi, ücret, gece hizmeti, konum gönderme, şehirlerarası taşıma, araç tipleri.
+- [İletişim](https://devranlarotokurtarma.com/#iletisim): Telefon, WhatsApp ve çekici talep formu.
+- [KVKK Aydınlatma Metni](https://devranlarotokurtarma.com/kvkk.html)
+- [Gizlilik ve Çerez Politikası](https://devranlarotokurtarma.com/gizlilik-politikasi.html)
+
+## Ek
+
+- [Tam içerik (llms-full.txt)](https://devranlarotokurtarma.com/llms-full.txt): Sitedeki metnin tamamı tek dosyada.
