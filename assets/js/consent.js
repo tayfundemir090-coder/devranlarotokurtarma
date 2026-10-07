@@ -4,6 +4,7 @@
   'use strict';
 
   var TAGS = {
+    gtmId: 'GTM-PC2X3CKM', // Google Tag Manager kapsayıcısı (sayfa <head>'inde yüklenir)
     adsId: '',          // Google Ads etiket kimliği, örn. 'AW-123456789'
     callConversion: '', // Telefon tıklaması dönüşümü, örn. 'AW-123456789/AbCdEfGh'
     waConversion: '',   // WhatsApp tıklaması / form dönüşümü, örn. 'AW-123456789/IjKlMnOp'
@@ -11,7 +12,7 @@
   };
 
   var KEY = 'cerez_onayi';
-  var enabled = !!(TAGS.adsId || TAGS.gaId);
+  var enabled = !!(TAGS.gtmId || TAGS.adsId || TAGS.gaId);
 
   function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
@@ -33,18 +34,22 @@
     gtag('set', 'url_passthrough', true);
     if (read() === 'granted') gtag('consent', 'update', consentState(true));
 
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + (TAGS.adsId || TAGS.gaId);
-    document.head.appendChild(s);
-    gtag('js', new Date());
-    if (TAGS.adsId) gtag('config', TAGS.adsId);
-    if (TAGS.gaId) gtag('config', TAGS.gaId);
+    if (TAGS.adsId || TAGS.gaId) {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + (TAGS.adsId || TAGS.gaId);
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      if (TAGS.adsId) gtag('config', TAGS.adsId);
+      if (TAGS.gaId) gtag('config', TAGS.gaId);
+    }
   }
 
   // Dönüşümler: telefon, WhatsApp ve iletişim formu
+  // GTM tetikleyicileri için: telefon_tiklama, whatsapp_tiklama, whatsapp-konum_tiklama, form_tiklama
   function convert(sendTo, label) {
     if (!enabled) return;
+    window.dataLayer.push({ event: label + '_tiklama', iletisim_yontemi: label });
     if (sendTo) gtag('event', 'conversion', { send_to: sendTo });
     if (TAGS.gaId) gtag('event', 'generate_lead', { method: label });
   }
@@ -81,6 +86,7 @@
       if (!c) return;
       save(c);
       gtag('consent', 'update', consentState(c === 'granted'));
+      window.dataLayer.push({ event: 'cerez_tercihi', cerez_onayi: c });
       bar.remove();
     });
     document.body.appendChild(bar);
