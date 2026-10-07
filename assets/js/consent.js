@@ -47,11 +47,25 @@
 
   // Dönüşümler: telefon, WhatsApp ve iletişim formu
   // GTM tetikleyicileri için: telefon_tiklama, whatsapp_tiklama, whatsapp-konum_tiklama, form_tiklama
+  // AntiClick: dönüşüm olayları yalnızca ziyaretçi temiz çıkarsa gönderilir (bot/sahte tıklamada hiç gönderilmez).
+  // AntiClick betiği yüklenmeden tıklanırsa kuyruğa (AntiClick.q) girer; betik hiç yüklenemezse 5 sn sonra gönderilir.
+  function whenClean(fn) {
+    var done = false;
+    var run = function () { if (!done) { done = true; fn(); } };
+    var AC = window.AntiClick = window.AntiClick || {};
+    if (typeof AC.onClean === 'function') { AC.onClean(run); return; }
+    (AC.q = AC.q || []).push(run);
+    setTimeout(function () {
+      if (typeof (window.AntiClick || {}).onClean !== 'function') run();
+    }, 5000);
+  }
   function convert(sendTo, label) {
     if (!enabled) return;
-    window.dataLayer.push({ event: label + '_tiklama', iletisim_yontemi: label });
-    if (sendTo) gtag('event', 'conversion', { send_to: sendTo });
-    if (TAGS.gaId) gtag('event', 'generate_lead', { method: label });
+    whenClean(function () {
+      window.dataLayer.push({ event: label + '_tiklama', iletisim_yontemi: label });
+      if (sendTo) gtag('event', 'conversion', { send_to: sendTo });
+      if (TAGS.gaId) gtag('event', 'generate_lead', { method: label });
+    });
   }
   document.addEventListener('click', function (e) {
     if (!e.target.closest) return;
